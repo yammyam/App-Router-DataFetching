@@ -5,8 +5,10 @@ export default async function Page({
 }: {
   params: { id: string | string[] };
 }) {
+  //아래는 직접 데이터를 패칭해오는 모습
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${params.id}`
+    //페이지컴포넌트의 자동으로 프롭스로 전달되는 url 파라미터의 값이다. 이름은 id
   );
 
   if (!response.ok) {
