@@ -4,7 +4,8 @@ import { BookData } from "@/types";
 
 async function AllBooks() {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`,
+    { cache: "no-store" } //캐싱된 데이터 쓰지않고 매번 새롭게 불러오겠다는 뜻, 얘가 기본값임.
   );
   //데이터를 불러올땐 반드시 예외처리가 있어야한다.
   if (!response.ok) {
@@ -22,7 +23,8 @@ async function AllBooks() {
 
 async function RecoBooks() {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/random`
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/random`,
+    { next: { revalidate: 3 } }
   );
   if (!response.ok) {
     return <div>추천도서 불러오기에서 오류가 발생했습니다...</div>;
