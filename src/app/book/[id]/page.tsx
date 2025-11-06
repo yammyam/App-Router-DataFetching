@@ -1,4 +1,14 @@
+import { notFound } from "next/navigation";
 import style from "./page.module.css";
+
+// export const dynamicParams = false;
+//아래 generateStaticParams 로 설정한 정적 페이지들빼고 다이나믹한페이지를 하면 안되겠구나로 구별하여 book/4번같은것을 notFound처리함
+
+export function generateStaticParams() {
+  //빌드타임에 미리생성하고자 서버측에 풀라우트 캐시로써 미리만들 book/1,2,3 페이지 미리만들기
+  return [{ id: "1" }, { id: "2" }, { id: "3" }];
+  // *주의할 점 : id 우측이 문자열일 것. 아래 직접패칭하는 코드가 없더라도 1,2,3번은 강제로 패칭되다는 점
+}
 
 export default async function Page({
   params,
@@ -13,6 +23,9 @@ export default async function Page({
   );
 
   if (!response.ok) {
+    if (response.status === 404) {
+      notFound();
+    }
     return <div>오류가 발생했습니다....</div>;
   }
   const book = await response.json();
