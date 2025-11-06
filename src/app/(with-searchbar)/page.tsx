@@ -5,7 +5,7 @@ import { BookData } from "@/types";
 async function AllBooks() {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`,
-    { cache: "no-store" } //캐싱된 데이터 쓰지않고 매번 새롭게 불러오겠다는 뜻, 얘가 기본값임.
+    { cache: "force-cache" } //캐싱된 데이터 쓰지않고 매번 새롭게 불러오겠다는 뜻, 얘가 기본값임.
   );
   //데이터를 불러올땐 반드시 예외처리가 있어야한다.
   if (!response.ok) {
