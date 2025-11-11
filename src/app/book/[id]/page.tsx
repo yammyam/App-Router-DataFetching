@@ -1,5 +1,8 @@
 import { notFound } from "next/navigation";
 import style from "./page.module.css";
+import { ReviewData } from "@/types";
+import ReviewItem from "@/components/review-item";
+import ReviewEditor from "@/components/review-editor";
 
 // export const dynamicParams = false;
 //아래 generateStaticParams 로 설정한 정적 페이지들빼고 다이나믹한페이지를 하면 안되겠구나로 구별하여 book/4번같은것을 notFound처리함
@@ -45,20 +48,20 @@ async function BookDetail({ bookId }: { bookId: string | string[] }) {
   );
 }
 
-function ReviewEditor() {
-  async function createReviewAction(formData: FormData) {
-    "use server"; //서버액션 명시
-    const content = formData.get("content")?.toString();
-    const author = formData.get("author")?.toString();
-    console.log(content, author);
-  }
+async function ReviewList({ bookId }: { bookId: string | string[] }) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/review/book/${bookId}`
+  );
+  if (!response.ok)
+    throw new Error(`리뷰정보 불러오기 실패 : ${response.statusText}`);
+
+  const reviews: ReviewData[] = await response.json();
+
   return (
     <section>
-      <form action={createReviewAction}>
-        <input name="content" placeholder="리뷰를 적어주세요!" />
-        <input name="author" placeholder="작성자" />
-        <button type="submit">작성하기</button>
-      </form>
+      {reviews.map((review) => (
+        <ReviewItem key={`review-item-${review.id}`} {...review} />
+      ))}
     </section>
   );
 }
@@ -72,7 +75,8 @@ export default async function Page({
   return (
     <div className={style.container}>
       <BookDetail bookId={id} />
-      <ReviewEditor />
+      <ReviewEditor bookId={id} />
+      <ReviewList bookId={id} />
     </div>
   );
 }
