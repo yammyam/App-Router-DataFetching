@@ -50,7 +50,8 @@ async function BookDetail({ bookId }: { bookId: string | string[] }) {
 
 async function ReviewList({ bookId }: { bookId: string | string[] }) {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/review/book/${bookId}`
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/review/book/${bookId}`,
+    { next: { tags: [`review-${bookId}`] } }
   );
   if (!response.ok)
     throw new Error(`리뷰정보 불러오기 실패 : ${response.statusText}`);
