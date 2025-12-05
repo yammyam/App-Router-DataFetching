@@ -4,6 +4,12 @@ import style from "./layout.module.css";
 import { BookData } from "@/types";
 import { ReactNode } from "react";
 
+export const metadata = {
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
+
 async function Footer() {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`,

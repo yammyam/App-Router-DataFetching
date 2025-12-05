@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
 import style from "./page.module.css";
-import { ReviewData } from "@/types";
+import { ReviewData, BookData } from "@/types";
 import ReviewItem from "@/components/review-item";
 import ReviewEditor from "@/components/review-editor";
 import Image from "next/image";
+import { title } from "node:process";
 
 // export const dynamicParams = false;
 //아래 generateStaticParams 로 설정한 정적 페이지들빼고 다이나믹한페이지를 하면 안되겠구나로 구별하여 book/4번같은것을 notFound처리함
@@ -71,6 +72,31 @@ async function ReviewList({ bookId }: { bookId: string | string[] }) {
       ))}
     </section>
   );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string | string[] }>;
+}) {
+  const { id } = await params;
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${id}`
+    //페이지컴포넌트의 자동으로 프롭스로 전달되는 url 파라미터의 값이다. 이름은 id
+  );
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+  const book: BookData = await response.json();
+  return {
+    title: `${book.title} - 한입북스`,
+    description: `${book.description}`,
+    openGraph: {
+      title: `${book.title} - 한입북스`,
+      description: `${book.description}`,
+    },
+    images: [book.coverImgUrl],
+  };
 }
 
 export default async function Page({
